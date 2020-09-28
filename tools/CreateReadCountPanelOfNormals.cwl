@@ -1,0 +1,105 @@
+#!/usr/bin/env cwl-runner
+class: CommandLineTool
+cwlVersion: v1.0
+id: CreateReadCountPanelOfNormals
+
+requirements:
+- class: ShellCommandRequirement
+- class: InlineJavascriptRequirement
+- class: DockerRequirement
+  dockerPull: us.gcr.io/broad-gatk/gatk:4.1.6.0
+
+inputs:
+- id: pon_entity_id
+  type: string
+- id: read_count_files
+  type:
+    type: array
+    items: File
+  inputBinding:
+    prefix: --input
+    itemSeparator: " --input "
+- id: minimum_interval_median_percentile
+  type: float?
+  default: '10.0'
+  inputBinding:
+    prefix: --minimum-interval-median-percentile
+- id: maximum_zeros_in_sample_percentage
+  type: float?
+  default: '5.0'
+  inputBinding:
+    prefix: --maximum-zeros-in-sample-percentage
+- id: maximum_zeros_in_interval_percentage
+  type: float?
+  default: '5.0'
+  inputBinding:
+    prefix: --maximum-zeros-in-interval-percentage
+- id: extreme_sample_median_percentile
+  type: float?
+  default: '2.5'
+  inputBinding:
+    prefix: --extreme-sample-median-percentile
+- id: do_impute_zeros
+  type: boolean?
+  default: 'true'
+  inputBinding:
+    prefix: --do-impute-zeros
+- id: extreme_outlier_truncation_percentile
+  type: float?
+  default: '0.1'
+  inputBinding:
+    prefix: --extreme-outlier-truncation-percentile
+- id: number_of_eigensamples
+  type: int?
+  default: '20'
+  inputBinding:
+    prefix: --number-of-eigensamples
+- id: maximum_chunk_size
+  type: int?
+  default: '16777216'
+  inputBinding:
+    prefix: --maximum-chunk-size
+- id: annotated_intervals
+  type: File?
+  inputBinding:
+    prefix: --annotated-intervals
+- id: gatk4_jar_override
+  label: gatk4_jar_override
+  type:
+  - File?
+  - string?
+  default: "/root/gatk.jar"
+- id: gatk_docker
+  type: string
+- id: mem_gb
+  type: int?
+  default: 7
+- id: disk_space_gb
+  type: int?
+- id: use_ssd
+  type: boolean
+  default: false
+- id: cpu
+  type: int?
+- id: preemptible_attempts
+  type: int?
+
+outputs:
+- id: read_count_pon
+  type: File
+  outputBinding:
+    glob: $(inputs.pon_entity_id).pon.hdf5
+    loadContents: false
+stdout: _stdout
+stderr: _stderr
+
+baseCommand: []
+arguments:
+- position: 0
+  shellQuote: false
+  valueFrom: |-
+    set -e
+    export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
+
+    gatk --java-options -Xmx$((inputs.mem_gb*1000)-500)m CreateReadCountPanelOfNormals \
+        --output $(inputs.pon_entity_id).pon.hdf5
