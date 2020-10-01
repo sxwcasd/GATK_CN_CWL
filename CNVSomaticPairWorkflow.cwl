@@ -375,11 +375,18 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var ref_size = ceil(size(ref_fasta, "GB") + size(ref_fasta_dict, "GB") + size(ref_fasta_fai, "GB"))
-        var gatk4_override_size = if defined(gatk4_jar_override) then ceil(size(gatk4_jar_override, "GB")) else 0
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(ref_size+disk_pad)
+        return(ref_size+disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -407,9 +414,20 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        var tumor_bam_size = ceil(size(tumor_bam, "GB") + size(tumor_bam_idx, "GB"))
-        return(tumor_bam_size + ceil(size(PreprocessIntervals.preprocessed_intervals, "GB")) + disk_pad)
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        var tumor_bam_size = Math.ceil(inputs.tumor_bam.size + inputs.tumor_bam_idx.size);
+
+        return(tumor_bam_size + Math.ceil(PreprocessIntervals/preprocessed_intervals.size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -436,10 +454,22 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        var ref_size = ceil(size(ref_fasta, "GB") + size(ref_fasta_dict, "GB") + size(ref_fasta_fai, "GB"))
-        var tumor_bam_size = ceil(size(tumor_bam, "GB") + size(tumor_bam_idx, "GB"))
-        return(tumor_bam_size + ref_size + disk_pad)
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+
+        var tumor_bam_size = Math.ceil(inputs.tumor_bam.size + inputs.tumor_bam_idx.size);
+
+        return(tumor_bam_size + ref_size + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -466,9 +496,20 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var read_count_pon_size = ceil(size(read_count_pon, "GB"))
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(read_count_pon_size + ceil(size(CollectCountsTumor.counts, "GB")) + disk_pad)
+        var read_count_pon_size = Math.ceil(inputs.read_count_pon.size);
+
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(read_count_pon_size + Math.ceil(CollectCountsTumor/counts.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -505,10 +546,22 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var ref_size = ceil(size(ref_fasta, "GB") + size(ref_fasta_dict, "GB") + size(ref_fasta_fai, "GB"))
-        var normal_bam_size = if defined(normal_bam) then ceil(size(normal_bam, "GB") + size(normal_bam_idx, "GB")) else 0
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(normal_bam_size + ref_size + disk_pad)
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        var normal_bam_size = 0;
+        if (inputs.normal_bam){
+          normal_bam_size = Math.ceil(inputs.normal_bam.size + inputs.normal_bam.secondaryFiles[1].size);
+        }
+        return(normal_bam_size + ref_size + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -589,9 +642,22 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        var model_segments_normal_portion = if defined(normal_bam) then ceil(size(CollectAllelicCountsNormal.allelic_counts, "GB")) else 0
-        return(ceil(size(DenoiseReadCountsTumor.denoised_copy_ratios, "GB")) + ceil(size(CollectAllelicCountsTumor.allelic_counts, "GB")) + model_segments_normal_portion + disk_pad)
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        var model_segments_normal_portion = 0;
+        if (inputs.normal_bam){
+          model_segments_normal_portion = Math.ceil(CollectAllelicCountsNormal/allelic_counts.size);
+        }
+
+        return(Math.ceil(DenoiseReadCountsTumor.denoised_copy_ratios.size) + Math.ceil(CollectAllelicCountsTumor.allelic_counts.size) + model_segments_normal_portion + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -631,9 +697,18 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var gatk4_override_size = if defined(gatk4_jar_override) then ceil(size(gatk4_jar_override, "GB")) else 0
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        ceil(size(DenoiseReadCountsTumor.denoised_copy_ratios, "GB")) + ceil(size(ModelSegmentsTumor.copy_ratio_only_segments, "GB")) + disk_pad
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(Math.ceil(DenoiseReadCountsTumor/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsTumor/copy_ratio_only_segments.size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -650,7 +725,7 @@ steps:
   - id: denoised_copy_ratios
     source: DenoiseReadCountsTumor/denoised_copy_ratios
   - id: ref_fasta_dict
-    valueFrom: $(ref_fasta.secondaryFiles[1])
+    valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
     source: minimum_contig_length
   - id: gatk4_jar_override
@@ -660,9 +735,18 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var ref_size = ceil(size(ref_fasta, "GB") + size(ref_fasta_dict, "GB") + size(ref_fasta_fai, "GB"))
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(ref_size + ceil(size(DenoiseReadCountsTumor.standardized_copy_ratios, "GB")) + ceil(size(DenoiseReadCountsTumor.denoised_copy_ratios, "GB")) + ceil(size(ModelSegmentsTumor.het_allelic_counts, "GB")) + ceil(size(ModelSegmentsTumor.modeled_segments, "GB")) + disk_pad)
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(ref_size + Math.ceil(DenoiseReadCountsTumor/standardized_copy_ratios.size) + Math.ceil(DenoiseReadCountsTumor/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsTumor/het_allelic_counts.size) + Math.ceil(ModelSegmentsTumor/modeled_segments.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -689,7 +773,7 @@ steps:
   - id: modeled_segments
     source: ModelSegmentsTumor/modeled_segments
   - id: ref_fasta_dict
-    valueFrom: $(ref_fasta.secondaryFiles[1])
+    valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
     source: minimum_contig_length
   - id: gatk4_jar_override
@@ -732,9 +816,22 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var normal_bam_size = if defined(normal_bam) then ceil(size(normal_bam, "GB") + size(normal_bam_idx, "GB")) else 0
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(normal_bam_size + ceil(size(PreprocessIntervals.preprocessed_intervals, "GB")) + disk_pad)
+        var normal_bam_size = 0;
+        if (inputs.normal_bam){
+          normal_bam_size = Math.ceil(inputs.normal_bam.size + inputs.normal_bam_idx.secondaryFiles[1].size);
+        }
+
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(normal_bam_size + Math.ceil(PreprocessIntervals/preprocessed_intervals.size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -792,9 +889,19 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var read_count_pon_size = ceil(size(read_count_pon, "GB"))
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(read_count_pon_size + ceil(size(CollectCountsNormal.counts, "GB")) + disk_pad)
+        var read_count_pon_size = Math.ceil(inputs.read_count_pon.size)
+
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(read_count_pon_size + Math.ceil(CollectCountsNormal/counts.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -883,8 +990,17 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(ceil(size(DenoiseReadCountsNormal.denoised_copy_ratios, "GB")) + ceil(size(CollectAllelicCountsNormal.allelic_counts, "GB")) + disk_pad)
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(CollectAllelicCountsNormal/allelic_counts.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -1011,8 +1127,17 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(ceil(size(DenoiseReadCountsNormal.denoised_copy_ratios, "GB")) + ceil(size(ModelSegmentsNormal.copy_ratio_only_segments, "GB")) + disk_pad)
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsNormal/copy_ratio_only_segments.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -1053,7 +1178,7 @@ steps:
   - id: denoised_copy_ratios
     source: UnScatter_denoised_copy_ratios_normal/File_
   - id: ref_fasta_dict
-    valueFrom: $(ref_fasta.secondaryFiles[1])
+    valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
     source: minimum_contig_length
   - id: gatk4_jar_override
@@ -1063,9 +1188,18 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var ref_size = ceil(size(ref_fasta, "GB") + size(ref_fasta_dict, "GB") + size(ref_fasta_fai, "GB"))
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        return(ref_size + ceil(size(DenoiseReadCountsNormal.standardized_copy_ratios, "GB")) + ceil(size(DenoiseReadCountsNormal.denoised_copy_ratios, "GB")) + ceil(size(ModelSegmentsNormal.het_allelic_counts, "GB")) + ceil(size(ModelSegmentsNormal.modeled_segments, "GB")) + disk_pad)
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        return(ref_size + Math.ceil(DenoiseReadCountsNormal/standardized_copy_ratios.size) + Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsNormal/het_allelic_counts.size) + Math.ceil(ModelSegmentsNormal/modeled_segments.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -1175,9 +1309,19 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var disk_pad = 20 + ceil(size(intervals, "GB")) + ceil(size(common_sites, "GB")) + gatk4_override_size + select_first([emergency_extra_disk, 0])
-        var ref_size = ceil(size(ref_fasta, "GB") + size(ref_fasta_dict, "GB") + size(ref_fasta_fai, "GB"))
-        return(ref_size + ceil(size(DenoiseReadCountsNormal/standardized_copy_ratios, "GB")) + ceil(size(DenoiseReadCountsNormal/denoised_copy_ratios, "GB")) + ceil(size(ModelSegmentsNormal/het_allelic_counts, "GB")) + ceil(size(ModelSegmentsNormal/modeled_segments, "GB")) + disk_pad)
+        var gatk4_override_size = 0;
+        if(inputs.gatk4_jar_override){
+          var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
+        }
+        var emergency_extra_disk_size = 0;
+        if(inputs.emergency_extra_disk){
+          var emergency_extra_disk_size = inputs.emergency_extra_disk;
+        }
+        var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
+
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+
+        return(ref_size + Math.ceil(DenoiseReadCountsNormal/standardized_copy_ratios.size) + Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsNormal/het_allelic_counts.size) + Math.ceil(ModelSegmentsNormal/modeled_segments.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
