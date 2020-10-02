@@ -412,6 +412,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_collect_counts
   - id: disk_space_gb
+    source: [PreprocessIntervals/preprocessed_intervals]
     valueFrom:
       ${
         var gatk4_override_size = 0;
@@ -427,7 +428,7 @@ steps:
 
         var tumor_bam_size = Math.ceil(inputs.tumor_bam.size + inputs.tumor_bam_idx.size);
 
-        return(tumor_bam_size + Math.ceil(PreprocessIntervals/preprocessed_intervals.size) + disk_pad);
+        return(tumor_bam_size + Math.ceil(self[0].size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -494,6 +495,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_denoise_read_counts
   - id: disk_space_gb
+    source: [CollectCountsTumor/counts]
     valueFrom:
       ${
         var read_count_pon_size = Math.ceil(inputs.read_count_pon.size);
@@ -509,7 +511,7 @@ steps:
 
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(read_count_pon_size + Math.ceil(CollectCountsTumor/counts.size) + disk_pad)
+        return(read_count_pon_size + Math.ceil(self[0].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -640,6 +642,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_model_segments
   - id: disk_space_gb
+    source: [UnScatter_allelic_counts_normal/File_, DenoiseReadCountsTumor/denoised_copy_ratios, CollectAllelicCountsTumor/allelic_counts]
     valueFrom:
       ${
         var gatk4_override_size = 0;
@@ -654,10 +657,10 @@ steps:
 
         var model_segments_normal_portion = 0;
         if (inputs.normal_bam){
-          model_segments_normal_portion = Math.ceil(CollectAllelicCountsNormal/allelic_counts.size);
+          model_segments_normal_portion = Math.ceil(self[0].size);
         }
 
-        return(Math.ceil(DenoiseReadCountsTumor.denoised_copy_ratios.size) + Math.ceil(CollectAllelicCountsTumor.allelic_counts.size) + model_segments_normal_portion + disk_pad);
+        return(Math.ceil(self[1].size) + Math.ceil(self[2].size) + model_segments_normal_portion + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -695,6 +698,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_call_copy_ratio_segments
   - id: disk_space_gb
+    source: [DenoiseReadCountsTumor/denoised_copy_ratios, ModelSegmentsTumor/copy_ratio_only_segments]
     valueFrom:
       ${
         var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
@@ -708,7 +712,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(Math.ceil(DenoiseReadCountsTumor/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsTumor/copy_ratio_only_segments.size) + disk_pad);
+        return(Math.ceil(self[0].size) + Math.ceil(self[1].size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -733,6 +737,7 @@ steps:
   - id: gatk_docker
     source: gatk_docker
   - id: disk_space_gb
+    source: [DenoiseReadCountsTumor/standardized_copy_ratios, DenoiseReadCountsTumor/denoised_copy_ratios, ModelSegmentsTumor/het_allelic_counts, ModelSegmentsTumor/modeled_segments]
     valueFrom:
       ${
         var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
@@ -746,7 +751,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(ref_size + Math.ceil(DenoiseReadCountsTumor/standardized_copy_ratios.size) + Math.ceil(DenoiseReadCountsTumor/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsTumor/het_allelic_counts.size) + Math.ceil(ModelSegmentsTumor/modeled_segments.size) + disk_pad)
+        return(ref_size + Math.ceil(self[0].size) + Math.ceil(self[1].size) + Math.ceil(self[2].size) + Math.ceil(self[3].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -814,6 +819,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_collect_counts
   - id: disk_space_gb
+    source: [PreprocessIntervals/preprocessed_intervals]
     valueFrom:
       ${
         var normal_bam_size = 0;
@@ -831,7 +837,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(normal_bam_size + Math.ceil(PreprocessIntervals/preprocessed_intervals.size) + disk_pad);
+        return(normal_bam_size + Math.ceil(self[0].size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -887,6 +893,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_denoise_read_counts
   - id: disk_space_gb
+    source: [UnScatter_read_counts_normal/File_]
     valueFrom:
       ${
         var read_count_pon_size = Math.ceil(inputs.read_count_pon.size)
@@ -901,7 +908,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(read_count_pon_size + Math.ceil(CollectCountsNormal/counts.size) + disk_pad)
+        return(read_count_pon_size + Math.ceil(self[0].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -988,6 +995,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_model_segments
   - id: disk_space_gb
+    source: [DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_allelic_counts_normal/File_]
     valueFrom:
       ${
         var gatk4_override_size = 0;
@@ -1000,7 +1008,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(CollectAllelicCountsNormal/allelic_counts.size) + disk_pad)
+        return(Math.ceil(self[0].size) + Math.ceil(self[1].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -1125,6 +1133,7 @@ steps:
   - id: mem_gb
     source: mem_gb_for_call_copy_ratio_segments
   - id: disk_space_gb
+    source: [DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_copy_ratio_only_segments_normal/File_]
     valueFrom:
       ${
         var gatk4_override_size = 0;
@@ -1137,7 +1146,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsNormal/copy_ratio_only_segments.size) + disk_pad)
+        return(Math.ceil(self[0].size) + Math.ceil(self[1].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -1186,6 +1195,7 @@ steps:
   - id: gatk_docker
     source: gatk_docker
   - id: disk_space_gb
+    source: [DenoiseReadCountsNormal/standardized_copy_ratios, DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_het_allelic_counts_normal/File_, UnScatter_modeled_segments_normal/File_]
     valueFrom:
       ${
         var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
@@ -1199,7 +1209,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(ref_size + Math.ceil(DenoiseReadCountsNormal/standardized_copy_ratios.size) + Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsNormal/het_allelic_counts.size) + Math.ceil(ModelSegmentsNormal/modeled_segments.size) + disk_pad)
+        return(ref_size + Math.ceil(self[0].size) + Math.ceil(self[1].size) + Math.ceil(self[2].size) + Math.ceil(self[3].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -1299,7 +1309,7 @@ steps:
   - id: modeled_segments
     source: UnScatter_modeled_segments_normal/File_
   - id: ref_fasta_dict
-    valueFrom: $(ref_fasta.secondaryFiles[1])
+    valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
     source: minimum_contig_length
   - id: gatk4_jar_override
@@ -1307,6 +1317,7 @@ steps:
   - id: gatk_docker
     source: gatk_docker
   - id: disk_space_gb
+    source: [DenoiseReadCountsNormal/standardized_copy_ratios, DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_het_allelic_counts_normal/File_, UnScatter_modeled_segments_normal/File_]
     valueFrom:
       ${
         var gatk4_override_size = 0;
@@ -1321,7 +1332,7 @@ steps:
 
         var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
 
-        return(ref_size + Math.ceil(DenoiseReadCountsNormal/standardized_copy_ratios.size) + Math.ceil(DenoiseReadCountsNormal/denoised_copy_ratios.size) + Math.ceil(ModelSegmentsNormal/het_allelic_counts.size) + Math.ceil(ModelSegmentsNormal/modeled_segments.size) + disk_pad)
+        return(ref_size + Math.ceil(self[0].size) + Math.ceil(self[1].size) + Math.ceil(self[2].size) + Math.ceil(self[3].size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
