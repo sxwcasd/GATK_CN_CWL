@@ -56,8 +56,7 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.entity_id).denoisedCR.tsv
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

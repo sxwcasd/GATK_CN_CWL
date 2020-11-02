@@ -114,8 +114,7 @@ outputs:
   outputBinding:
     glob: scaled_delta_MAD
     loadContents: false
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

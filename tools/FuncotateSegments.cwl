@@ -16,7 +16,7 @@ inputs:
   type: File
   secondaryFiles:
   - ^.dict
-  - ^.fai
+  - .fai
 - id: funcotator_ref_version
   type: string
 - id: gatk4_jar_override
@@ -93,8 +93,7 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.input_seg_file.nameroot).funcotated.tsv.gene_list.txt
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

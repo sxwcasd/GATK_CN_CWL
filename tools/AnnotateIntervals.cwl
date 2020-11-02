@@ -22,7 +22,7 @@ inputs:
   type: File
   secondaryFiles:
   - ^.dict
-  - ^.fai
+  - .fai
   inputBinding:
     prefix: --reference
     shellQuote: false
@@ -44,13 +44,13 @@ inputs:
   type: int?
   default: 1000000
   inputBinding:
-    prefix: feature-query-lookahead
+    prefix: --feature-query-lookahead
     shellQuote: false
 - id: gatk4_jar_override
   type:
   - File?
   - string?
-  default: /root/gatk.jar
+  default: /gatk/gatk.jar
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -72,8 +72,6 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.intervals.nameroot).annotated.tsv
-stdout: _stdout
-stderr: _stderr
 
 
 baseCommand: []
@@ -86,5 +84,5 @@ arguments:
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
     gatk --java-options -Xmx$((inputs.mem_gb*1000)-500)m AnnotateIntervals \
-        --interval-merging-rule OVERLAPPING_ONLY \
-        --output $(inputs.intervals.nameroot).annotated.tsv
+    --interval-merging-rule OVERLAPPING_ONLY \
+    --output $(inputs.intervals.nameroot).annotated.tsv

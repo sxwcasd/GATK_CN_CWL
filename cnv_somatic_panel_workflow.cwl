@@ -1,4 +1,3 @@
-#2!/usr/bin/env cwl-runner
 class: Workflow
 cwlVersion: v1.0
 id: CNVSomaticPanelWorkflow
@@ -25,12 +24,12 @@ inputs:
   type: File
   secondaryFiles:
   - ^.dict
-  - ^.fai
+  - .fai
 - id: gatk_docker
   type: string
 - id: do_explicit_gc_correction
-  type: boolean?
-  default: true
+  type: int[]?
+  default: [1]
 - id: gatk4_jar_override
   type:
   - File?
@@ -126,14 +125,7 @@ steps:
   scatter: explicit_correction
   in:
   - id: explicit_correction
-    valueFrom:
-      ${
-          if(inputs.do_explicit_gc_correction){
-            return([1])
-          }else{
-            return([])
-          }
-      }
+    source: do_explicit_gc_correction
   - id: intervals
     source: PreprocessIntervals/preprocessed_intervals
   - id: ref_fasta
@@ -170,8 +162,6 @@ steps:
     source: normal_bams
   - id: ref_fasta
     source: ref_fasta
-  - id: enable_indexing
-    valueFrom: "false"
   - id: format
     source: collect_counts_format
   - id: gatk4_jar_override

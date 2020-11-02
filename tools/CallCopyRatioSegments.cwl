@@ -72,8 +72,7 @@ outputs:
   outputBinding:
     glob: $(inputs.entity_id).called.igv.seg
     loadContents: false
-stdout: _stdout
-stderr: _stderr
+
 
 
 baseCommand: []
