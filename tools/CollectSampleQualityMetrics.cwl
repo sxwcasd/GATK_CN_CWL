@@ -44,8 +44,7 @@ outputs:
   type: string
   # outputBinding:
   #   glob: $(inputs.entity_id).qcStatus.txt
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

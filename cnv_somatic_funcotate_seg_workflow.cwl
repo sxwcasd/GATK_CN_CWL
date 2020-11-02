@@ -14,7 +14,7 @@ inputs:
   type: File
   secondaryFiles:
   - ^.dict
-  - ^.fai
+  - .fai
 - id: funcotator_ref_version
   type: string
 - id: gatk4_jar_override

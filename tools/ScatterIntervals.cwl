@@ -48,8 +48,7 @@ outputs:
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.interval_list.nameroot).scattered.*.interval_list
     loadContents: false
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

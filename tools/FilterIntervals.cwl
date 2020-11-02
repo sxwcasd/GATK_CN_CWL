@@ -106,7 +106,7 @@ inputs:
   type:
   - File?
   - string?
-  default: /root/gatk.jar
+  default: /gatk/gatk.jar
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -128,8 +128,7 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.intervals.nameroot).filtered.interval_list
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

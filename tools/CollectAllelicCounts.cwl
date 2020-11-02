@@ -29,7 +29,7 @@ inputs:
   type: File
   secondaryFiles:
   - ^.dict
-  - ^.fai
+  - .fai
   inputBinding:
     prefix: --reference
     shellQuote: false
@@ -43,7 +43,7 @@ inputs:
   type:
   - File?
   - string?
-  default: /root/gatk.jar
+  default: /gatk/gatk.jar
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -69,8 +69,7 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.bam.nameroot).allelicCounts.tsv
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

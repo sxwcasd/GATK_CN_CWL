@@ -73,8 +73,7 @@ outputs:
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).modeled.png
     loadContents: false
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

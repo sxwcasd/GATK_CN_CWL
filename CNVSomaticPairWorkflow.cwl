@@ -29,7 +29,7 @@ inputs:
 - id: ref_fasta
   type: File
   secondaryFiles:
-  - ^.fai
+  - .fai
   - ^.dict
 - id: gatk_docker
   type: string

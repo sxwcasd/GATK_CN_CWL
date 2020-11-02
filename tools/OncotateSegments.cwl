@@ -45,8 +45,7 @@ outputs:
   outputBinding:
     glob: $(inputs.called_file.nameroot).gene_list.txt
     loadContents: false
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

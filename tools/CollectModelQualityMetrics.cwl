@@ -40,8 +40,7 @@ outputs:
   type: string
   outputBinding:
     glob: qcStatus.txt
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

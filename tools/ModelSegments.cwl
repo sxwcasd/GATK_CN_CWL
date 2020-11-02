@@ -232,8 +232,7 @@ outputs:
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).modelFinal.af.param
     loadContents: false
-stdout: _stdout
-stderr: _stderr
+
 
 baseCommand: []
 arguments:

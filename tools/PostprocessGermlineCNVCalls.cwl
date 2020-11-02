@@ -63,7 +63,7 @@ inputs:
   type:
   - File?
   - string?
-  default: /root/gatk.jar
+  default: /gatk/gatk.jar
 - id: gatk_docker
   label: gatk_docker
   type: string
@@ -94,8 +94,7 @@ outputs:
   type: File
   outputBinding:
     glob: denoised_copy_ratios-$(inputs.entity_id).tsv
-stdout: _stdout
-stderr: _stderr
+
 
 
 
@@ -153,7 +152,7 @@ arguments:
   shellQuote: false
   valueFrom: |-
 
-  
+
     rm -rf CALLS_*
     rm -rf MODEL_*
     rm -rf contig-ploidy-calls

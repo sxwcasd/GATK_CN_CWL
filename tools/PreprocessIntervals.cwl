@@ -27,7 +27,7 @@ inputs:
   type: File
   secondaryFiles:
   - ^.dict
-  - ^.fai
+  - .fai
   inputBinding:
     prefix: --reference
     shellQuote: false
@@ -47,7 +47,7 @@ inputs:
   type:
   - File?
   - string?
-  default: /root/gatk.jar
+  default: /gatk/gatk.jar
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -74,7 +74,7 @@ arguments:
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
     gatk --java-options -Xmx$((inputs.mem_gb*1000)-500)m PreprocessIntervals \
-        --interval-merging-rule OVERLAPPING_ONLY \
+    --interval-merging-rule OVERLAPPING_ONLY
 - position: 0
   shellQuote: false
   valueFrom: |-
@@ -102,5 +102,3 @@ outputs:
         }
         return (basename + ".preprocessed.interval_list")
       }
-stdout: _stdout
-stderr: _stderr
