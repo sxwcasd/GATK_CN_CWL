@@ -7,7 +7,7 @@ requirements:
 - class: ShellCommandRequirement
 - class: InlineJavascriptRequirement
 - class: DockerRequirement
-  dockerPull: us.gcr.io/broad-gatk/gatk:4.1.6.0
+  dockerPull: us.gcr.io/broad-gatk/gatk:4.1.9.0
 
 inputs:
 - id: input_seg_file

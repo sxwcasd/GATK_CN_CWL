@@ -67,7 +67,7 @@ inputs:
 - id: extreme_sample_median_percentile
   type: float?
 - id: do_impute_zeros
-  type: boolean?
+  type: string?
 - id: extreme_outlier_truncation_percentile
   type: float?
 - id: number_of_eigensamples

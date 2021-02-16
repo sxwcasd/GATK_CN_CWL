@@ -7,7 +7,7 @@ requirements:
 - class: ShellCommandRequirement
 - class: InlineJavascriptRequirement
 - class: DockerRequirement
-  dockerPull: us.gcr.io/broad-gatk/gatk:4.1.6.0
+  dockerPull: us.gcr.io/broad-gatk/gatk:4.1.9.0
 
 inputs:
 - id: pon_entity_id
@@ -44,8 +44,8 @@ inputs:
     prefix: --extreme-sample-median-percentile
     shellQuote: false
 - id: do_impute_zeros
-  type: boolean?
-  default: true
+  type: string?
+  default: "true"
   inputBinding:
     prefix: --do-impute-zeros
     shellQuote: false
@@ -106,6 +106,7 @@ arguments:
   shellQuote: false
   valueFrom: >-
     set -e
+
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
     gatk --java-options -Xmx$((inputs.mem_gb*1000)-500)m CreateReadCountPanelOfNormals \
