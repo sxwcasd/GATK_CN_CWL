@@ -64,7 +64,7 @@ outputs:
 - id: entity_id
   type: string
   outputBinding:
-    glob: $(inputs.bam.nameroot)
+    outputEval: $(inputs.bam.nameroot)
 - id: allelic_counts
   type: File
   outputBinding:

@@ -93,7 +93,7 @@ arguments:
 
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
-    gatk --java-options -Xmx$((inputs.mem_gb*1000)-500)m CollectReadCounts \
+    gatk --java-options -Xmx$((inputs.mem_gb*1000)-500)m CollectReadCounts
     --interval-merging-rule OVERLAPPING_ONLY
 - position: 0
   shellQuote: false

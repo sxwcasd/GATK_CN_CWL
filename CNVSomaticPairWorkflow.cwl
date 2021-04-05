@@ -8,6 +8,7 @@ requirements:
 - class: StepInputExpressionRequirement
 - class: SubworkflowFeatureRequirement
 - class: ScatterFeatureRequirement
+- class: MultipleInputFeatureRequirement
 
 inputs:
 - id: common_sites
@@ -21,7 +22,9 @@ inputs:
   secondaryFiles:
   - ^.bai
 - id: normal_bam
-  type: File?
+  type:
+    type: array
+    items: File
   secondaryFiles:
   - ^.bai
 - id: read_count_pon
@@ -251,8 +254,8 @@ outputs:
   type: File
   outputSource: PlotModeledSegmentsTumor/modeled_segments_plot
 - id: read_counts_entity_id_normal
-  type: File?
-  outputSource: UnScatter_read_counts_entity_id_normal_file/file_
+  type: string?
+  outputSource: UnScatter_read_counts_entity_id_normal/string_
 - id: read_counts_normal
   type: File?
   outputSource: UnScatter_read_counts_normal/File_
@@ -348,16 +351,18 @@ outputs:
   outputSource: UnScatterOncotate_genelist/File_
 - id: funcotated_called_file_tumor
   type: File?
-  outputSource: UnScatterFuncotate_seg/File_
+  outputSource: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
 - id: funcotated_called_gene_list_file_tumor
   type: File?
-  outputSource: UnScatterFuncotate_genelist/File_
+  outputSource: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
 
 steps:
 - id: PreprocessIntervals
   in:
   - id: intervals
     source: intervals
+  - id: common_sites
+    source: common_sites
   - id: blacklist_intervals
     source: blacklist_intervals
   - id: ref_fasta
@@ -375,7 +380,7 @@ steps:
   - id: disk_space_gb
     valueFrom:
       ${
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
         var gatk4_override_size = 0;
         if(inputs.gatk4_jar_override){
           var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
@@ -411,8 +416,11 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_collect_counts
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
-    source: [PreprocessIntervals/preprocessed_intervals]
     valueFrom:
       ${
         var gatk4_override_size = 0;
@@ -426,9 +434,9 @@ steps:
 
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        var tumor_bam_size = Math.ceil(inputs.tumor_bam.size + inputs.tumor_bam_idx.size);
+        var tumor_bam_size = Math.ceil(inputs.bam.size + inputs.bam.secondaryFiles[0].size);
 
-        return(tumor_bam_size + Math.ceil(self[0].size) + disk_pad);
+        return(tumor_bam_size + Math.ceil(inputs.intervals.size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -438,6 +446,8 @@ steps:
   - id: counts
 - id: CollectAllelicCountsTumor
   in:
+  - id: intervals
+    source: intervals
   - id: common_sites
     source: common_sites
   - id: bam
@@ -452,6 +462,8 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_collect_allelic_counts
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
   - id: disk_space_gb
     valueFrom:
       ${
@@ -466,9 +478,9 @@ steps:
 
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
 
-        var tumor_bam_size = Math.ceil(inputs.tumor_bam.size + inputs.tumor_bam_idx.size);
+        var tumor_bam_size = Math.ceil(inputs.bam.size + inputs.bam.secondaryFiles[0].size);
 
         return(tumor_bam_size + ref_size + disk_pad);
       }
@@ -494,8 +506,13 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_denoise_read_counts
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
-    source: [CollectCountsTumor/counts]
     valueFrom:
       ${
         var read_count_pon_size = Math.ceil(inputs.read_count_pon.size);
@@ -511,7 +528,7 @@ steps:
 
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(read_count_pon_size + Math.ceil(self[0].size) + disk_pad)
+        return(read_count_pon_size + Math.ceil(inputs.read_counts.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -520,17 +537,13 @@ steps:
   - id: standardized_copy_ratios
   - id: denoised_copy_ratios
 - id: CollectAllelicCountsNormal
-  scatter: run_normal
+  scatter: bam
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_normal
+  #   valueFrom: |
+  #     ${
+  #       return [inputs.bam];
+  #     }
   - id: common_sites
     source: common_sites
   - id: bam
@@ -545,10 +558,14 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_collect_allelic_counts
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
   - id: disk_space_gb
     valueFrom:
       ${
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
         var gatk4_override_size = 0;
         if(inputs.gatk4_jar_override){
           var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
@@ -560,8 +577,8 @@ steps:
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
         var normal_bam_size = 0;
-        if (inputs.normal_bam){
-          normal_bam_size = Math.ceil(inputs.normal_bam.size + inputs.normal_bam.secondaryFiles[1].size);
+        if (inputs.bam){
+          normal_bam_size = Math.ceil(inputs.bam.size + inputs.bam.secondaryFiles[0].size);
         }
         return(normal_bam_size + ref_size + disk_pad);
       }
@@ -641,6 +658,14 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_model_segments
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
+  - id: normal_bam
+    source: normal_bam
   - id: disk_space_gb
     source: [UnScatter_allelic_counts_normal/File_, DenoiseReadCountsTumor/denoised_copy_ratios, CollectAllelicCountsTumor/allelic_counts]
     valueFrom:
@@ -697,11 +722,19 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_call_copy_ratio_segments
+  - id: ref_fasta
+    source: ref_fasta
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
     source: [DenoiseReadCountsTumor/denoised_copy_ratios, ModelSegmentsTumor/copy_ratio_only_segments]
     valueFrom:
       ${
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
         var gatk4_override_size = 0;
         if(inputs.gatk4_jar_override){
           var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
@@ -736,11 +769,19 @@ steps:
     source: gatk4_jar_override
   - id: gatk_docker
     source: gatk_docker
+  - id: ref_fasta
+    source: ref_fasta
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
     source: [DenoiseReadCountsTumor/standardized_copy_ratios, DenoiseReadCountsTumor/denoised_copy_ratios, ModelSegmentsTumor/het_allelic_counts, ModelSegmentsTumor/modeled_segments]
     valueFrom:
       ${
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
         var gatk4_override_size = 0;
         if(inputs.gatk4_jar_override){
           var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
@@ -778,7 +819,7 @@ steps:
   - id: modeled_segments
     source: ModelSegmentsTumor/modeled_segments
   - id: ref_fasta_dict
-    valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
+    valueFrom: ref_fasta.secondaryFiles[1]
   - id: minimum_contig_length
     source: minimum_contig_length
   - id: gatk4_jar_override
@@ -791,17 +832,17 @@ steps:
   out:
   - id: modeled_segments_plot
 - id: CollectCountsNormal
-  scatter: run_normal
+  scatter: bam
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_normal
+  #   valueFrom:
+  #     ${
+  #       if(inputs.normal_bam){
+  #         return[1]
+  #       }else{
+  #         []
+  #       }
+  #     }
   - id: intervals
     source: PreprocessIntervals/preprocessed_intervals
   - id: bam
@@ -818,13 +859,16 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_collect_counts
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
-    source: [PreprocessIntervals/preprocessed_intervals]
     valueFrom:
       ${
         var normal_bam_size = 0;
-        if (inputs.normal_bam){
-          normal_bam_size = Math.ceil(inputs.normal_bam.size + inputs.normal_bam_idx.secondaryFiles[1].size);
+        if (inputs.bam){
+          normal_bam_size = Math.ceil(inputs.bam.size + inputs.bam.secondaryFiles[0].size);
         }
 
         var gatk4_override_size = 0;
@@ -837,7 +881,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(normal_bam_size + Math.ceil(self[0].size) + disk_pad);
+        return(normal_bam_size + Math.ceil(inputs.intervals.size) + disk_pad);
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -852,13 +896,13 @@ steps:
   run: tools/UnScatterString.cwl
   out:
   - id: string_
-- id: UnScatter_read_counts_entity_id_normal_file
-  in:
-  - id: input_array
-    source: CollectCountsNormal/entity_id
-  run: tools/UnScatterString_File.cwl
-  out:
-  - id: file_
+# - id: UnScatter_read_counts_entity_id_normal_file
+#   in:
+#   - id: input_array
+#     source: CollectCountsNormal/entity_id
+#   run: tools/UnScatterString_File.cwl
+#   out:
+#   - id: file_
 - id: UnScatter_read_counts_normal
   in:
   - id: input_array
@@ -867,21 +911,21 @@ steps:
   out:
   - id: File_
 - id: DenoiseReadCountsNormal
-  scatter: run_normal
+  scatter: read_counts
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_normal
+  #   valueFrom:
+  #     ${
+  #       if(inputs.normal_bam){
+  #         return[1]
+  #       }else{
+  #         []
+  #       }
+  #     }
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: read_counts
-    source: UnScatter_read_counts_normal/File_
+    source: CollectCountsNormal/counts
   - id: read_count_pon
     source: read_count_pon
   - id: number_of_eigensamples
@@ -892,8 +936,13 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_denoise_read_counts
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
-    source: [UnScatter_read_counts_normal/File_]
     valueFrom:
       ${
         var read_count_pon_size = Math.ceil(inputs.read_count_pon.size)
@@ -908,7 +957,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        return(read_count_pon_size + Math.ceil(self[0].size) + disk_pad)
+        return(read_count_pon_size + Math.ceil(inputs.read_counts.size) + disk_pad)
       }
   - id: preemptible_attempts
     source: preemptible_attempts
@@ -931,23 +980,23 @@ steps:
   out:
   - id: File_
 - id: ModelSegmentsNormal
-  scatter: run_normal
+  scatter: allelic_counts
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_normal
+  #   valueFrom:
+  #     ${
+  #       if(inputs.normal_bam){
+  #         return[1]
+  #       }else{
+  #         []
+  #       }
+  #     }
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: denoised_copy_ratios
     source: UnScatter_denoised_copy_ratios_normal/File_
   - id: allelic_counts
-    source: UnScatter_allelic_counts_normal/File_
+    source: CollectAllelicCountsNormal/allelic_counts
   - id: max_num_segments_per_chromosome
     source: max_num_segments_per_chromosome
   - id: min_total_allele_count
@@ -994,6 +1043,12 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_model_segments
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
     source: [DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_allelic_counts_normal/File_]
     valueFrom:
@@ -1198,7 +1253,7 @@ steps:
     source: [DenoiseReadCountsNormal/standardized_copy_ratios, DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_het_allelic_counts_normal/File_, UnScatter_modeled_segments_normal/File_]
     valueFrom:
       ${
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
         var gatk4_override_size = 0;
         if(inputs.gatk4_jar_override){
           var gatk4_override_size = Math.ceil(inputs.gatk4_jar_override.size);
@@ -1330,7 +1385,7 @@ steps:
         }
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
-        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[1].size + inputs.ref_fasta.secondaryFiles[2].size);
+        var ref_size = Math.ceil(inputs.ref_fasta.size + inputs.ref_fasta.secondaryFiles[0].size + inputs.ref_fasta.secondaryFiles[1].size);
 
         return(ref_size + Math.ceil(self[0].size) + Math.ceil(self[1].size) + Math.ceil(self[2].size) + Math.ceil(self[3].size) + disk_pad)
       }
@@ -1389,17 +1444,17 @@ steps:
   out:
   - id: File_
 - id: CNVFuncotateSegmentsWorkflow
-  scatter: run_funco
+#  scatter: run_funco
   in:
-  - id: run_funco
-    valueFrom:
-      ${
-        if(inputs.is_run_funcotator){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_funco
+  #   valueFrom:
+  #     ${
+  #       if(inputs.is_run_funcotator){
+  #         return[1]
+  #       }else{
+  #         []
+  #       }
+  #     }
   - id: input_seg_file
     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
   - id: ref_fasta
@@ -1438,17 +1493,17 @@ steps:
   out:
   - id: funcotated_seg_simple_tsv
   - id: funcotated_gene_list_tsv
-- id: UnScatterFuncotate_genelist
-  in:
-  - id: input_array
-    source: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
-  run: tools/UnScatterFile.cwl
-  out:
-  - id: File_
-- id: UnScatterFuncotate_seg
-  in:
-  - id: input_array
-    source: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
-  run: tools/UnScatterFile.cwl
-  out:
-  - id: File_
+# - id: UnScatterFuncotate_genelist
+#   in:
+#   - id: input_array
+#     source: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
+#   run: tools/UnScatterFile.cwl
+#   out:
+#   - id: File_
+# - id: UnScatterFuncotate_seg
+#   in:
+#   - id: input_array
+#     source: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
+#   run: tools/UnScatterFile.cwl
+#   out:
+#   - id: File_

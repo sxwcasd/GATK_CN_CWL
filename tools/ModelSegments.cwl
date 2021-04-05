@@ -90,6 +90,7 @@ inputs:
   inputBinding:
     prefix: --window-size
     shellQuote: false
+    itemSeparator: " --window-size "
 - id: num_changepoints_penalty_factor
   type: float?
   default: 1.0
@@ -237,6 +238,7 @@ outputs:
 baseCommand: []
 arguments:
 - position: 0
+  shellQuote: false
   valueFrom: |-
     set -e
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
@@ -244,7 +246,6 @@ arguments:
     gatk --java-options -Xmx$((inputs.mem_gb*1000)-3000)m ModelSegments
 
 - position: 2
+  shellQuote: false
   valueFrom: |-
-    # We need to create the file even if the above command doesn't so we have something to delocalize
-    # If no file is created by the above task then it will copy out an empty file
-    touch $(inputs.output_dir)/$(inputs.entity_id).hets.normal.tsv
+    && touch $(inputs.output_dir)/$(inputs.entity_id).hets.normal.tsv
