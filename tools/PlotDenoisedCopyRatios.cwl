@@ -79,41 +79,41 @@ outputs:
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).standardizedMAD.txt
     loadContents: false
-- id: standardized_MAD_value
-  type: float
-  outputBinding:
-    outputEval: $(outputs.standardized_MAD.contents)
-    loadContents: false
+# - id: standardized_MAD_value
+#   type: float
+#   outputBinding:
+#     outputEval: $(outputs.standardized_MAD.contents)
+#     loadContents: false
 - id: denoised_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedMAD.txt
     loadContents: false
-- id: denoised_MAD_value
-  type: float
-  outputBinding:
-    outputEval: $(outputs.denoised_MAD.contents)
-    loadContents: false
+# - id: denoised_MAD_value
+#   type: float
+#   outputBinding:
+#     outputEval: $(outputs.denoised_MAD.contents)
+#     loadContents: false
 - id: delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).deltaMAD.txt
     loadContents: false
-- id: delta_MAD_value
-  type: float
-  outputBinding:
-    outputEval: $(outputs.delta_MAD.contents)
-    loadContents: false
+# - id: delta_MAD_value
+#   type: float
+#   outputBinding:
+#     outputEval: $(outputs.delta_MAD.contents)
+#     loadContents: false
 - id: scaled_delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).scaledDeltaMAD.txt
     loadContents: false
-- id: scaled_delta_MAD_value
-  type: float
-  outputBinding:
-    outputEval: $(outputs.scaled_delta_MAD.contents)
-    loadContents: false
+# - id: scaled_delta_MAD_value
+#   type: float
+#   outputBinding:
+#     outputEval: $(outputs.scaled_delta_MAD.contents)
+#     loadContents: false
 
 
 baseCommand: []

@@ -229,27 +229,27 @@ outputs:
 - id: standardized_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD
-- id: standardized_MAD_value_tumor
-  type: float
-  outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD_value
+# - id: standardized_MAD_value_tumor
+#   type: float
+#  outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD_value
 - id: denoised_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD
-- id: denoised_MAD_value_tumor
-  type: float
-  outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD_value
+# - id: denoised_MAD_value_tumor
+#   type: float
+#  outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD_value
 - id: delta_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/delta_MAD
-- id: delta_MAD_value_tumor
-  type: float
-  outputSource: PlotDenoisedCopyRatiosTumor/delta_MAD_value
+# - id: delta_MAD_value_tumor
+#   type: float
+#  outputSource: PlotDenoisedCopyRatiosTumor/delta_MAD_value
 - id: scaled_delta_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/scaled_delta_MAD
-- id: scaled_delta_MAD_value_tumor
-  type: float
-  outputSource: PlotDenoisedCopyRatiosTumor/scaled_delta_MAD_value
+# - id: scaled_delta_MAD_value_tumor
+#   type: float
+#  outputSource: PlotDenoisedCopyRatiosTumor/scaled_delta_MAD_value
 - id: modeled_segments_plot_tumor
   type: File
   outputSource: PlotModeledSegmentsTumor/modeled_segments_plot
@@ -319,27 +319,33 @@ outputs:
 - id: standardized_MAD_normal
   type: File?
   outputSource: UnScatterstandardized_MAD/File_
-- id: standardized_MAD_value_normal
-  type: float?
-  outputSource: UnScatterstandardized_MAD_value/float_
+# - id: standardized_MAD_value_normal
+#   type: float?
+#   outputSource: UnScatterstandardized_MAD_value/float_
 - id: denoised_MAD_normal
   type: File?
   outputSource: UnScatterdenoised_MAD/File_
+<<<<<<< HEAD
 - id: denoised_MAD_value_normal
   type: float?
   outputSource: UnScatterdenoised_MAD_value/float_
+=======
+# - id: denoised_MAD_value_normal
+#   type: float?
+#   outputSource: UnScatterdenoised_MAD_value/float_
+>>>>>>> 6ebac5c7063387264fedbed6b21d04f68023c83e
 - id: delta_MAD_normal
   type: File?
   outputSource: UnScatterdelta_MAD/File_
-- id: delta_MAD_value_normal
-  type: float?
-  outputSource: UnScatterdelta_MAD_value/float_
+# - id: delta_MAD_value_normal
+#   type: float?
+#   outputSource: UnScatterdelta_MAD_value/float_
 - id: scaled_delta_MAD_normal
   type: File?
   outputSource: UnScatterscaled_delta_MAD/File_
-- id: scaled_delta_MAD_value_normal
-  type: float?
-  outputSource: UnScatterscaled_delta_MAD_value/float_
+# - id: scaled_delta_MAD_value_normal
+#   type: float?
+#   outputSource: UnScatterscaled_delta_MAD_value/float_
 - id: modeled_segments_plot_normal
   type: File?
   outputSource: UnScattermodeled_segments_plot/File_
@@ -801,13 +807,13 @@ steps:
   - id: denoised_copy_ratios_plot
   - id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
-  - id: standardized_MAD_value
+  #- id: standardized_MAD_value
   - id: denoised_MAD
-  - id: denoised_MAD_value
+  #- id: denoised_MAD_value
   - id: delta_MAD
-  - id: delta_MAD_value
+  #- id: delta_MAD_value
   - id: scaled_delta_MAD
-  - id: scaled_delta_MAD_value
+  #- id: scaled_delta_MAD_value
 - id: PlotModeledSegmentsTumor
   in:
   - id: entity_id
@@ -1277,13 +1283,13 @@ steps:
   - id: denoised_copy_ratios_plot
   - id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
-  - id: standardized_MAD_value
+  #- id: standardized_MAD_value
   - id: denoised_MAD
-  - id: denoised_MAD_value
+  #- id: denoised_MAD_value
   - id: delta_MAD
-  - id: delta_MAD_value
+  #- id: delta_MAD_value
   - id: scaled_delta_MAD
-  - id: scaled_delta_MAD_value
+  #- id: scaled_delta_MAD_value
 - id: UnScatterdenoised_copy_ratios_plot
   in:
   - id: input_array
@@ -1305,13 +1311,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-- id: UnScatterstandardized_MAD_value
-  in:
-  - id: input_array
-    source: PlotDenoisedCopyRatiosNormal/standardized_MAD_value
-  run: tools/UnScatterFloat.cwl
-  out:
-  - id: float_
+# - id: UnScatterstandardized_MAD_value
+#   in:
+#   - id: input_array
+#     source: PlotDenoisedCopyRatiosNormal/standardized_MAD_value
+#   run: tools/UnScatterFloat.cwl
+#   out:
+#   - id: float_
 - id: UnScatterdenoised_MAD
   in:
   - id: input_array
@@ -1319,13 +1325,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-- id: UnScatterdenoised_MAD_value
-  in:
-  - id: input_array
-    source: PlotDenoisedCopyRatiosNormal/denoised_MAD_value
-  run: tools/UnScatterFloat.cwl
-  out:
-  - id: float_
+# - id: UnScatterdenoised_MAD_value
+#   in:
+#   - id: input_array
+#     source: PlotDenoisedCopyRatiosNormal/denoised_MAD_value
+#   run: tools/UnScatterFloat.cwl
+#   out:
+#   - id: float_
 - id: UnScatterdelta_MAD
   in:
   - id: input_array
@@ -1333,13 +1339,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-- id: UnScatterdelta_MAD_value
-  in:
-  - id: input_array
-    source: PlotDenoisedCopyRatiosNormal/delta_MAD_value
-  run: tools/UnScatterFloat.cwl
-  out:
-  - id: float_
+# - id: UnScatterdelta_MAD_value
+#   in:
+#   - id: input_array
+#     source: PlotDenoisedCopyRatiosNormal/delta_MAD_value
+#   run: tools/UnScatterFloat.cwl
+#   out:
+#   - id: float_
 - id: UnScatterscaled_delta_MAD
   in:
   - id: input_array
@@ -1347,13 +1353,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-- id: UnScatterscaled_delta_MAD_value
-  in:
-  - id: input_array
-    source: PlotDenoisedCopyRatiosNormal/scaled_delta_MAD_value
-  run: tools/UnScatterFloat.cwl
-  out:
-  - id: float_
+# - id: UnScatterscaled_delta_MAD_value
+#   in:
+#   - id: input_array
+#     source: PlotDenoisedCopyRatiosNormal/scaled_delta_MAD_value
+#   run: tools/UnScatterFloat.cwl
+#   out:
+#   - id: float_
 - id: PlotModeledSegmentsNormal
   scatter: bam
   in:
