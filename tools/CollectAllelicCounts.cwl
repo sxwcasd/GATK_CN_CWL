@@ -80,5 +80,4 @@ arguments:
 
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
-    gatk --java-options -Xmx$((inputs.mem_gb*1000)-1000)m CollectAllelicCounts \
-        --output $(inputs.bam.nameroot).allelicCounts.tsv
+    gatk --java-options -Xmx$((inputs.mem_gb*1000)-1000)m CollectAllelicCounts --output $(inputs.bam.nameroot).allelicCounts.tsv

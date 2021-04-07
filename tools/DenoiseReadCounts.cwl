@@ -31,7 +31,7 @@ inputs:
   type:
   - File?
   - string?
-  default: "/root/gatk.jar"
+  default: "/gatk/gatk.jar"
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -66,6 +66,4 @@ arguments:
     set -e
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
-    gatk --java-options -Xmx$((inputs.mem_gb*1000)-1000)m DenoiseReadCounts \
-        --standardized-copy-ratios $(inputs.entity_id).standardizedCR.tsv \
-        --denoised-copy-ratios $(inputs.entity_id).denoisedCR.tsv
+    gatk --java-options -Xmx$((inputs.mem_gb*1000)-1000)m DenoiseReadCounts  --standardized-copy-ratios $(inputs.entity_id).standardizedCR.tsv --denoised-copy-ratios $(inputs.entity_id).denoisedCR.tsv

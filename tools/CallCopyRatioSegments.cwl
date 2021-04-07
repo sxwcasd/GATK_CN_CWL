@@ -45,7 +45,7 @@ inputs:
   type:
   - File?
   - string?
-  default: "/root/gatk.jar"
+  default: "/gatk/gatk.jar"
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -83,5 +83,4 @@ arguments:
     set -e
     export GATK_LOCAL_JAR=$(inputs.gatk4_jar_override)
 
-    gatk --java-options -Xmx$((inputs.mem_gb*1000)-1000)m CallCopyRatioSegments \
-        --output $(inputs.entity_id).called.seg
+    gatk --java-options -Xmx$((inputs.mem_gb*1000)-1000)m CallCopyRatioSegments --output $(inputs.entity_id).called.seg

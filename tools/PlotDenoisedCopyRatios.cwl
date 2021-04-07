@@ -46,7 +46,7 @@ inputs:
   type:
   - File?
   - string?
-  default: "/root/gatk.jar"
+  default: "/gatk/gatk.jar"
 - id: gatk_docker
   type: string
 - id: mem_gb
@@ -68,52 +68,42 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoised.png
-    loadContents: false
 - id: denoised_copy_ratios_lim_4_plot
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedLimit4.png
-    loadContents: false
 - id: standardized_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).standardizedMAD.txt
-    loadContents: false
 - id: standardized_MAD_value
   type: float
   outputBinding:
     glob: standardized_MAD
-    loadContents: false
 - id: denoised_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedMAD.txt
-    loadContents: false
 - id: denoised_MAD_value
   type: float
   outputBinding:
     glob: denoised_MAD
-    loadContents: false
 - id: delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).deltaMAD.txt
-    loadContents: false
 - id: delta_MAD_value
   type: float
   outputBinding:
     glob: delta_MAD
-    loadContents: false
 - id: scaled_delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).scaledDeltaMAD.txt
-    loadContents: false
 - id: scaled_delta_MAD_value
   type: float
   outputBinding:
     glob: scaled_delta_MAD
-    loadContents: false
 
 
 baseCommand: []

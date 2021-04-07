@@ -161,7 +161,7 @@ inputs:
   type:
   - File?
   - string?
-  default: "/root/gatk.jar"
+  default: "/gatk/gatk.jar"
 - id: gatk_docker
   type: string
 - id: mem_gb
