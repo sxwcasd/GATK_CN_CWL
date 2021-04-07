@@ -324,7 +324,7 @@ outputs:
   outputSource: UnScatterstandardized_MAD_value/float_
 - id: denoised_MAD_normal
   type: File?
-  outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD
+  outputSource: Unscatterdenoised_MAD/File_
 - id: denoised_MAD_value_normal
   type: float?
   outputSource: UnScatterdenoised_MAD_value/float_
@@ -818,8 +818,10 @@ steps:
     source: ModelSegmentsTumor/het_allelic_counts
   - id: modeled_segments
     source: ModelSegmentsTumor/modeled_segments
+  - id: ref_fasta
+    source: ref_fasta
   - id: ref_fasta_dict
-    valueFrom: ref_fasta.secondaryFiles[1]
+    valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
     source: minimum_contig_length
   - id: gatk4_jar_override
@@ -1158,17 +1160,19 @@ steps:
   out:
   - id: File_
 - id: CallCopyRatioSegmentsNormal
-  scatter: run_normal
+  scatter: bam
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  #- id: run_normal
+  #  valueFrom:
+  #    ${
+  #      if(inputs.normal_bam){
+  #        return[1]
+  #      }else{
+  #        []
+  #      }
+  #    }
+  - id: bam
+    source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: copy_ratio_segments
@@ -1308,6 +1312,13 @@ steps:
   run: tools/UnScatterFloat.cwl
   out:
   - id: float_
+- id: UnScatterdenoised_MAD
+  in:
+  - id: input_array
+    source: PlotDenoisedCopyRatiosNormal/denoised_MAD
+  run: tools/UnScatterFile.cwl
+  out:
+  - id: File_
 - id: UnScatterdenoised_MAD_value
   in:
   - id: input_array
@@ -1344,17 +1355,19 @@ steps:
   out:
   - id: float_
 - id: PlotModeledSegmentsNormal
-  scatter: run_normal
+  scatter: bam
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  #- id: run_normal
+  #  valueFrom:
+  #    ${
+  #      if(inputs.normal_bam){
+  #        return[1]
+  #      }else{
+  #        []
+  #      }
+  #    }
+  - id: bam
+    source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: denoised_copy_ratios

@@ -68,42 +68,52 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoised.png
+    loadContents: false
 - id: denoised_copy_ratios_lim_4_plot
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedLimit4.png
+    loadContents: false
 - id: standardized_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).standardizedMAD.txt
+    loadContents: false
 - id: standardized_MAD_value
   type: float
   outputBinding:
-    glob: standardized_MAD
+    outputEval: $(outputs.standardized_MAD.contents)
+    loadContents: false
 - id: denoised_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedMAD.txt
+    loadContents: false
 - id: denoised_MAD_value
   type: float
   outputBinding:
-    glob: denoised_MAD
+    outputEval: $(outputs.denoised_MAD.contents)
+    loadContents: false
 - id: delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).deltaMAD.txt
+    loadContents: false
 - id: delta_MAD_value
   type: float
   outputBinding:
-    glob: delta_MAD
+    outputEval: $(outputs.delta_MAD.contents)
+    loadContents: false
 - id: scaled_delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).scaledDeltaMAD.txt
+    loadContents: false
 - id: scaled_delta_MAD_value
   type: float
   outputBinding:
-    glob: scaled_delta_MAD
+    outputEval: $(outputs.scaled_delta_MAD.contents)
+    loadContents: false
 
 
 baseCommand: []
