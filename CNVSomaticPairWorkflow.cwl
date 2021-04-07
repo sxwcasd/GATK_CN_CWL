@@ -324,7 +324,7 @@ outputs:
   outputSource: UnScatterstandardized_MAD_value/float_
 - id: denoised_MAD_normal
   type: File?
-  outputSource: Unscatterdenoised_MAD/File_
+  outputSource: UnScatterdenoised_MAD/File_
 - id: denoised_MAD_value_normal
   type: float?
   outputSource: UnScatterdenoised_MAD_value/float_
