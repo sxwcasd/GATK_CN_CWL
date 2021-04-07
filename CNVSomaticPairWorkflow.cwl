@@ -325,15 +325,9 @@ outputs:
 - id: denoised_MAD_normal
   type: File?
   outputSource: UnScatterdenoised_MAD/File_
-<<<<<<< HEAD
-- id: denoised_MAD_value_normal
-  type: float?
-  outputSource: UnScatterdenoised_MAD_value/float_
-=======
 # - id: denoised_MAD_value_normal
 #   type: float?
 #   outputSource: UnScatterdenoised_MAD_value/float_
->>>>>>> 6ebac5c7063387264fedbed6b21d04f68023c83e
 - id: delta_MAD_normal
   type: File?
   outputSource: UnScatterdelta_MAD/File_
