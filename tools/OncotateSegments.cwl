@@ -55,16 +55,16 @@ arguments:
     set -e
 
     # Get rid of the sequence dictionary at the top of the file
-    egrep -v "^\@" $(inputs.called_file) > $(inputs.called_file.nameroot).seq_dict_removed.seg
+    egrep -v "^\@" $(inputs.called_file.path) > $(inputs.called_file.nameroot).seq_dict_removed.seg
 
     echo "Starting the simple_tsv..."
 
-    /root/oncotator_venv/bin/oncotator --db-dir /root/onco_dbdir/ -c /root/tx_exact_uniprot_matches.AKT1_CRLF2_FGFR1.txt \
-      -u file:///root/onco_cache/ -r -v $(inputs.called_file.nameroot).seq_dict_removed.seg $(inputs.called_file.nameroot).per_segment.oncotated.txt hg19 \
+    /gatk/oncotator_venv/bin/oncotator --db-dir /gatk/onco_dbdir/ -c /gatk/tx_exact_uniprot_matches.AKT1_CRLF2_FGFR1.txt \
+      -u file:///gatk/onco_cache/ -r -v $(inputs.called_file.nameroot).seq_dict_removed.seg $(inputs.called_file.nameroot).per_segment.oncotated.txt hg19 \
       -i SEG_FILE -o SIMPLE_TSV $(inputs.additional_args)
 
     echo "Starting the gene list..."
 
-    /root/oncotator_venv/bin/oncotator --db-dir /root/onco_dbdir/ -c /root/tx_exact_uniprot_matches.AKT1_CRLF2_FGFR1.txt \
-      -u file:///root/onco_cache/ -r -v $(inputs.called_file.nameroot).seq_dict_removed.seg $(inputs.called_file.nameroot).gene_list.txt hg19 \
+    /gatk/oncotator_venv/bin/oncotator --db-dir /gatk/onco_dbdir/ -c /gatk/tx_exact_uniprot_matches.AKT1_CRLF2_FGFR1.txt \
+      -u file:///gatk/onco_cache/ -r -v $(inputs.called_file.nameroot).seq_dict_removed.seg $(inputs.called_file.nameroot).gene_list.txt hg19 \
       -i SEG_FILE -o GENE_LIST $(inputs.additional_args)

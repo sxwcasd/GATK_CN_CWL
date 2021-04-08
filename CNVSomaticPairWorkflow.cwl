@@ -223,9 +223,9 @@ outputs:
 - id: denoised_copy_ratios_plot_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/denoised_copy_ratios_plot
-- id: denoised_copy_ratios_lim_4_plot_tumor
-  type: File
-  outputSource: PlotDenoisedCopyRatiosTumor/denoised_copy_ratios_lim_4_plot
+# - id: denoised_copy_ratios_lim_4_plot_tumor
+#   type: File
+#   outputSource: PlotDenoisedCopyRatiosTumor/denoised_copy_ratios_lim_4_plot
 - id: standardized_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD
@@ -313,9 +313,9 @@ outputs:
 - id: denoised_copy_ratios_plot_normal
   type: File?
   outputSource: UnScatterdenoised_copy_ratios_plot/File_
-- id: denoised_copy_ratios_lim_4_plot_normal
-  type: File?
-  outputSource: UnScatterdenoised_copy_ratios_lim_4_plot/File_
+# - id: denoised_copy_ratios_lim_4_plot_normal
+#   type: File?
+#   outputSource: UnScatterdenoised_copy_ratios_lim_4_plot/File_
 - id: standardized_MAD_normal
   type: File?
   outputSource: UnScatterstandardized_MAD/File_
@@ -345,10 +345,10 @@ outputs:
   outputSource: UnScattermodeled_segments_plot/File_
 - id: oncotated_called_file_tumor
   type: File?
-  outputSource: UnScatterOncotate_called/File_
+  outputSource: CNVOncotatorWorkflow/oncotated_called_file
 - id: oncotated_called_gene_list_file_tumor
   type: File?
-  outputSource: UnScatterOncotate_genelist/File_
+  outputSource: CNVOncotatorWorkflow/oncotated_called_gene_list_file
 - id: funcotated_called_file_tumor
   type: File?
   outputSource: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
@@ -799,7 +799,7 @@ steps:
   run: tools/PlotDenoisedCopyRatios.cwl
   out:
   - id: denoised_copy_ratios_plot
-  - id: denoised_copy_ratios_lim_4_plot
+  #- id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
   #- id: standardized_MAD_value
   - id: denoised_MAD
@@ -1191,6 +1191,12 @@ steps:
     source: gatk_docker
   - id: mem_gb
     source: mem_gb_for_call_copy_ratio_segments
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
     source: [DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_copy_ratio_only_segments_normal/File_]
     valueFrom:
@@ -1228,23 +1234,27 @@ steps:
   out:
   - id: File_
 - id: PlotDenoisedCopyRatiosNormal
-  scatter: run_normal
+  scatter: bam
   in:
-  - id: run_normal
-    valueFrom:
-      ${
-        if(inputs.normal_bam){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_normal
+  #   valueFrom:
+  #     ${
+  #       if(inputs.normal_bam){
+  #         return[1]
+  #       }else{
+  #         []
+  #       }
+  #     }
+  - id: bam
+    source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: standardized_copy_ratios
     source: UnScatter_standardized_copy_ratios_normal/File_
   - id: denoised_copy_ratios
     source: UnScatter_denoised_copy_ratios_normal/File_
+  - id: ref_fasta
+    source: ref_fasta
   - id: ref_fasta_dict
     valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
@@ -1253,6 +1263,12 @@ steps:
     source: gatk4_jar_override
   - id: gatk_docker
     source: gatk_docker
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
     source: [DenoiseReadCountsNormal/standardized_copy_ratios, DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_het_allelic_counts_normal/File_, UnScatter_modeled_segments_normal/File_]
     valueFrom:
@@ -1275,7 +1291,7 @@ steps:
   run: tools/PlotDenoisedCopyRatios.cwl
   out:
   - id: denoised_copy_ratios_plot
-  - id: denoised_copy_ratios_lim_4_plot
+  #- id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
   #- id: standardized_MAD_value
   - id: denoised_MAD
@@ -1291,13 +1307,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-- id: UnScatterdenoised_copy_ratios_lim_4_plot
-  in:
-  - id: input_array
-    source: PlotDenoisedCopyRatiosNormal/denoised_copy_ratios_lim_4_plot
-  run: tools/UnScatterFile.cwl
-  out:
-  - id: File_
+# - id: UnScatterdenoised_copy_ratios_lim_4_plot
+#   in:
+#   - id: input_array
+#     source: PlotDenoisedCopyRatiosNormal/denoised_copy_ratios_lim_4_plot
+#   run: tools/UnScatterFile.cwl
+#   out:
+#   - id: File_
 - id: UnScatterstandardized_MAD
   in:
   - id: input_array
@@ -1376,6 +1392,8 @@ steps:
     source: UnScatter_het_allelic_counts_normal/File_
   - id: modeled_segments
     source: UnScatter_modeled_segments_normal/File_
+  - id: ref_fasta
+    source: ref_fasta
   - id: ref_fasta_dict
     valueFrom: $(inputs.ref_fasta.secondaryFiles[1])
   - id: minimum_contig_length
@@ -1384,6 +1402,12 @@ steps:
     source: gatk4_jar_override
   - id: gatk_docker
     source: gatk_docker
+  - id: emergency_extra_disk
+    source: emergency_extra_disk
+  - id: intervals
+    source: intervals
+  - id: common_sites
+    source: common_sites
   - id: disk_space_gb
     source: [DenoiseReadCountsNormal/standardized_copy_ratios, DenoiseReadCountsNormal/denoised_copy_ratios, UnScatter_het_allelic_counts_normal/File_, UnScatter_modeled_segments_normal/File_]
     valueFrom:
@@ -1415,17 +1439,17 @@ steps:
   out:
   - id: File_
 - id: CNVOncotatorWorkflow
-  scatter: run_onco
+  #scatter: run_onco
   in:
-  - id: run_onco
-    valueFrom:
-      ${
-        if(inputs.is_run_oncotator){
-          return[1]
-        }else{
-          []
-        }
-      }
+  # - id: run_onco
+  #   valueFrom:
+  #     ${
+  #       if(inputs.is_run_oncotator){
+  #         return[1]
+  #       }else{
+  #         []
+  #       }
+  #     }
   - id: called_file
     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
   - id: additional_args
@@ -1442,20 +1466,20 @@ steps:
   out:
   - id: oncotated_called_file
   - id: oncotated_called_gene_list_file
-- id: UnScatterOncotate_genelist
-  in:
-  - id: input_array
-    source: CNVOncotatorWorkflow/oncotated_called_gene_list_file
-  run: tools/UnScatterFile.cwl
-  out:
-  - id: File_
-- id: UnScatterOncotate_called
-  in:
-  - id: input_array
-    source: CNVOncotatorWorkflow/oncotated_called_file
-  run: tools/UnScatterFile.cwl
-  out:
-  - id: File_
+# - id: UnScatterOncotate_genelist
+#   in:
+#   - id: input_array
+#     source: CNVOncotatorWorkflow/oncotated_called_gene_list_file
+#   run: tools/UnScatterFile.cwl
+#   out:
+#   - id: File_
+# - id: UnScatterOncotate_called
+#   in:
+#   - id: input_array
+#     source: CNVOncotatorWorkflow/oncotated_called_file
+#   run: tools/UnScatterFile.cwl
+#   out:
+#   - id: File_
 - id: CNVFuncotateSegmentsWorkflow
 #  scatter: run_funco
   in:

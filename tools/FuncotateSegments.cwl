@@ -12,22 +12,31 @@ requirements:
 inputs:
 - id: input_seg_file
   type: File
+  inputBinding:
+    prefix: --segments
+    shellQuote: false
 - id: ref_fasta
   type: File
   secondaryFiles:
   - ^.dict
   - .fai
+  inputBinding:
+    prefix: -R
+    shellQuote: false
 - id: funcotator_ref_version
   type: string
 - id: gatk4_jar_override
   type:
   - File?
   - string?
-  default: "/root/gatk.jar"
+  default: "/gatk/gatk.jar"
 - id: funcotator_data_sources_tar_gz
-  type: File?
-  default: |-
-    gs://broad-public-datasets/funcotator/funcotator_dataSources.v1.6.20190124s.tar.gz
+  type:
+  - File?
+  - string?
+  default:
+    #gs://broad-public-datasets/funcotator/funcotator_dataSources.v1.6.20190124s.tar.gz
+    "https://storage.googleapis.com/broad-public-datasets/funcotator/funcotator_dataSources.v1.6.20190124s.tar.gz"
 - id: transcript_selection_mode
   type: string?
   default: CANONICAL
@@ -106,7 +115,7 @@ arguments:
      # Extract our data sources:
      echo "Extracting data sources zip file..."
      mkdir datasources_dir
-     tar zxvf $(inputs.funcotator_data_sources_tar_gz) -C datasources_dir --strip-components 1
+     curl $(inputs.funcotator_data_sources_tar_gz) | tar zxvf - -C datasources_dir --strip-components 1
      DATA_SOURCES_FOLDER="$PWD/datasources_dir"
 
      # Run FuncotateSegments:
@@ -114,8 +123,6 @@ arguments:
          --data-sources-path $DATA_SOURCES_FOLDER \
          --ref-version $(inputs.funcotator_ref_version) \
          --output-file-format SEG \
-         -R $(inputs.ref_fasta) \
-         --segments $(inputs.input_seg_file) \
          -O $(inputs.input_seg_file.nameroot).funcotated.tsv
 - position: 2
   shellQuote: false

@@ -69,11 +69,11 @@ outputs:
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoised.png
     loadContents: false
-- id: denoised_copy_ratios_lim_4_plot
-  type: File
-  outputBinding:
-    glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedLimit4.png
-    loadContents: false
+# - id: denoised_copy_ratios_lim_4_plot
+#   type: File
+#   outputBinding:
+#     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedLimit4.png
+#     loadContents: false
 - id: standardized_MAD
   type: File
   outputBinding:
