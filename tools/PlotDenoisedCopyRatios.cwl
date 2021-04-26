@@ -78,42 +78,46 @@ outputs:
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).standardizedMAD.txt
-    loadContents: false
-# - id: standardized_MAD_value
-#   type: float
-#   outputBinding:
-#     outputEval: $(outputs.standardized_MAD.contents)
-#     loadContents: false
+    loadContents: true
+- id: standardized_MAD_value
+  type: float
+  outputBinding:
+    glob: $(inputs.output_dir + "/" + inputs.entity_id + ".standardizedMAD.txt")
+    loadContents: true
+    outputEval: $(parseFloat(self[0].contents))
 - id: denoised_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).denoisedMAD.txt
-    loadContents: false
-# - id: denoised_MAD_value
-#   type: float
-#   outputBinding:
-#     outputEval: $(outputs.denoised_MAD.contents)
-#     loadContents: false
+    loadContents: true
+- id: denoised_MAD_value
+  type: float
+  outputBinding:
+    glob: $(inputs.output_dir + "/" + inputs.entity_id + ".denoisedMAD.txt")
+    loadContents: true
+    outputEval: $(parseFloat(self[0].contents))
 - id: delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).deltaMAD.txt
-    loadContents: false
-# - id: delta_MAD_value
-#   type: float
-#   outputBinding:
-#     outputEval: $(outputs.delta_MAD.contents)
-#     loadContents: false
+    loadContents: true
+- id: delta_MAD_value
+  type: float
+  outputBinding:
+    glob: $(inputs.output_dir + "/" + inputs.entity_id + ".deltaMAD.txt")
+    loadContents: true
+    outputEval: $(parseFloat(self[0].contents))
 - id: scaled_delta_MAD
   type: File
   outputBinding:
     glob: $(inputs.output_dir)/$(inputs.entity_id).scaledDeltaMAD.txt
-    loadContents: false
-# - id: scaled_delta_MAD_value
-#   type: float
-#   outputBinding:
-#     outputEval: $(outputs.scaled_delta_MAD.contents)
-#     loadContents: false
+    loadContents: true
+- id: scaled_delta_MAD_value
+  type: float
+  outputBinding:
+    glob: $(inputs.output_dir + "/" + inputs.entity_id + ".scaledDeltaMAD.txt")
+    loadContents: true
+    outputEval: $(parseFloat(self[0].contents))
 
 
 baseCommand: []

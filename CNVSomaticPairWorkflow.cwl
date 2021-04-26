@@ -229,27 +229,27 @@ outputs:
 - id: standardized_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD
-# - id: standardized_MAD_value_tumor
-#   type: float
-#  outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD_value
+- id: standardized_MAD_value_tumor
+  type: float
+  outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD_value
 - id: denoised_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD
-# - id: denoised_MAD_value_tumor
-#   type: float
-#  outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD_value
+- id: denoised_MAD_value_tumor
+  type: float
+  outputSource: PlotDenoisedCopyRatiosTumor/denoised_MAD_value
 - id: delta_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/delta_MAD
-# - id: delta_MAD_value_tumor
-#   type: float
-#  outputSource: PlotDenoisedCopyRatiosTumor/delta_MAD_value
+- id: delta_MAD_value_tumor
+  type: float
+  outputSource: PlotDenoisedCopyRatiosTumor/delta_MAD_value
 - id: scaled_delta_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/scaled_delta_MAD
-# - id: scaled_delta_MAD_value_tumor
-#   type: float
-#  outputSource: PlotDenoisedCopyRatiosTumor/scaled_delta_MAD_value
+- id: scaled_delta_MAD_value_tumor
+  type: float
+  outputSource: PlotDenoisedCopyRatiosTumor/scaled_delta_MAD_value
 - id: modeled_segments_plot_tumor
   type: File
   outputSource: PlotModeledSegmentsTumor/modeled_segments_plot
@@ -319,42 +319,42 @@ outputs:
 - id: standardized_MAD_normal
   type: File?
   outputSource: UnScatterstandardized_MAD/File_
-# - id: standardized_MAD_value_normal
-#   type: float?
-#   outputSource: UnScatterstandardized_MAD_value/float_
+- id: standardized_MAD_value_normal
+  type: float?
+  outputSource: UnScatterstandardized_MAD_value/float_
 - id: denoised_MAD_normal
   type: File?
   outputSource: UnScatterdenoised_MAD/File_
-# - id: denoised_MAD_value_normal
-#   type: float?
-#   outputSource: UnScatterdenoised_MAD_value/float_
+- id: denoised_MAD_value_normal
+  type: float?
+  outputSource: UnScatterdenoised_MAD_value/float_
 - id: delta_MAD_normal
   type: File?
   outputSource: UnScatterdelta_MAD/File_
-# - id: delta_MAD_value_normal
-#   type: float?
-#   outputSource: UnScatterdelta_MAD_value/float_
+- id: delta_MAD_value_normal
+  type: float?
+  outputSource: UnScatterdelta_MAD_value/float_
 - id: scaled_delta_MAD_normal
   type: File?
   outputSource: UnScatterscaled_delta_MAD/File_
-# - id: scaled_delta_MAD_value_normal
-#   type: float?
-#   outputSource: UnScatterscaled_delta_MAD_value/float_
+- id: scaled_delta_MAD_value_normal
+  type: float?
+  outputSource: UnScatterscaled_delta_MAD_value/float_
 - id: modeled_segments_plot_normal
   type: File?
   outputSource: UnScattermodeled_segments_plot/File_
-- id: oncotated_called_file_tumor
-  type: File?
-  outputSource: CNVOncotatorWorkflow/oncotated_called_file
-- id: oncotated_called_gene_list_file_tumor
-  type: File?
-  outputSource: CNVOncotatorWorkflow/oncotated_called_gene_list_file
-- id: funcotated_called_file_tumor
-  type: File?
-  outputSource: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
-- id: funcotated_called_gene_list_file_tumor
-  type: File?
-  outputSource: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
+# - id: oncotated_called_file_tumor
+#   type: File?
+#   outputSource: CNVOncotatorWorkflow/oncotated_called_file
+# - id: oncotated_called_gene_list_file_tumor
+#   type: File?
+#   outputSource: CNVOncotatorWorkflow/oncotated_called_gene_list_file
+# - id: funcotated_called_file_tumor
+#   type: File?
+#   outputSource: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
+# - id: funcotated_called_gene_list_file_tumor
+#   type: File?
+#   outputSource: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
 
 steps:
 - id: PreprocessIntervals
@@ -539,11 +539,6 @@ steps:
 - id: CollectAllelicCountsNormal
   scatter: bam
   in:
-  # - id: run_normal
-  #   valueFrom: |
-  #     ${
-  #       return [inputs.bam];
-  #     }
   - id: common_sites
     source: common_sites
   - id: bam
@@ -801,13 +796,13 @@ steps:
   - id: denoised_copy_ratios_plot
   #- id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
-  #- id: standardized_MAD_value
+  - id: standardized_MAD_value
   - id: denoised_MAD
-  #- id: denoised_MAD_value
+  - id: denoised_MAD_value
   - id: delta_MAD
-  #- id: delta_MAD_value
+  - id: delta_MAD_value
   - id: scaled_delta_MAD
-  #- id: scaled_delta_MAD_value
+  - id: scaled_delta_MAD_value
 - id: PlotModeledSegmentsTumor
   in:
   - id: entity_id
@@ -836,15 +831,6 @@ steps:
 - id: CollectCountsNormal
   scatter: bam
   in:
-  # - id: run_normal
-  #   valueFrom:
-  #     ${
-  #       if(inputs.normal_bam){
-  #         return[1]
-  #       }else{
-  #         []
-  #       }
-  #     }
   - id: intervals
     source: PreprocessIntervals/preprocessed_intervals
   - id: bam
@@ -913,21 +899,14 @@ steps:
   out:
   - id: File_
 - id: DenoiseReadCountsNormal
-  scatter: read_counts
+  scatter: normal_bam
   in:
-  # - id: run_normal
-  #   valueFrom:
-  #     ${
-  #       if(inputs.normal_bam){
-  #         return[1]
-  #       }else{
-  #         []
-  #       }
-  #     }
+  - id: normal_bam
+    source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: read_counts
-    source: CollectCountsNormal/counts
+    source: UnScatter_read_counts_normal/File_
   - id: read_count_pon
     source: read_count_pon
   - id: number_of_eigensamples
@@ -982,23 +961,16 @@ steps:
   out:
   - id: File_
 - id: ModelSegmentsNormal
-  scatter: allelic_counts
+  scatter: normal_bam
   in:
-  # - id: run_normal
-  #   valueFrom:
-  #     ${
-  #       if(inputs.normal_bam){
-  #         return[1]
-  #       }else{
-  #         []
-  #       }
-  #     }
+  - id: normal_bam
+    source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
   - id: denoised_copy_ratios
     source: UnScatter_denoised_copy_ratios_normal/File_
   - id: allelic_counts
-    source: CollectAllelicCountsNormal/allelic_counts
+    source: UnScatter_allelic_counts_normal/File_
   - id: max_num_segments_per_chromosome
     source: max_num_segments_per_chromosome
   - id: min_total_allele_count
@@ -1160,18 +1132,9 @@ steps:
   out:
   - id: File_
 - id: CallCopyRatioSegmentsNormal
-  scatter: bam
+  scatter: normal_bam
   in:
-  #- id: run_normal
-  #  valueFrom:
-  #    ${
-  #      if(inputs.normal_bam){
-  #        return[1]
-  #      }else{
-  #        []
-  #      }
-  #    }
-  - id: bam
+  - id: normal_bam
     source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
@@ -1234,18 +1197,9 @@ steps:
   out:
   - id: File_
 - id: PlotDenoisedCopyRatiosNormal
-  scatter: bam
+  scatter: normal_bam
   in:
-  # - id: run_normal
-  #   valueFrom:
-  #     ${
-  #       if(inputs.normal_bam){
-  #         return[1]
-  #       }else{
-  #         []
-  #       }
-  #     }
-  - id: bam
+  - id: normal_bam
     source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
@@ -1293,13 +1247,13 @@ steps:
   - id: denoised_copy_ratios_plot
   #- id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
-  #- id: standardized_MAD_value
+  - id: standardized_MAD_value
   - id: denoised_MAD
-  #- id: denoised_MAD_value
+  - id: denoised_MAD_value
   - id: delta_MAD
-  #- id: delta_MAD_value
+  - id: delta_MAD_value
   - id: scaled_delta_MAD
-  #- id: scaled_delta_MAD_value
+  - id: scaled_delta_MAD_value
 - id: UnScatterdenoised_copy_ratios_plot
   in:
   - id: input_array
@@ -1321,13 +1275,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-# - id: UnScatterstandardized_MAD_value
-#   in:
-#   - id: input_array
-#     source: PlotDenoisedCopyRatiosNormal/standardized_MAD_value
-#   run: tools/UnScatterFloat.cwl
-#   out:
-#   - id: float_
+- id: UnScatterstandardized_MAD_value
+  in:
+  - id: input_array
+    source: PlotDenoisedCopyRatiosNormal/standardized_MAD_value
+  run: tools/UnScatterFloat.cwl
+  out:
+  - id: float_
 - id: UnScatterdenoised_MAD
   in:
   - id: input_array
@@ -1335,13 +1289,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-# - id: UnScatterdenoised_MAD_value
-#   in:
-#   - id: input_array
-#     source: PlotDenoisedCopyRatiosNormal/denoised_MAD_value
-#   run: tools/UnScatterFloat.cwl
-#   out:
-#   - id: float_
+- id: UnScatterdenoised_MAD_value
+  in:
+  - id: input_array
+    source: PlotDenoisedCopyRatiosNormal/denoised_MAD_value
+  run: tools/UnScatterFloat.cwl
+  out:
+  - id: float_
 - id: UnScatterdelta_MAD
   in:
   - id: input_array
@@ -1349,13 +1303,13 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-# - id: UnScatterdelta_MAD_value
-#   in:
-#   - id: input_array
-#     source: PlotDenoisedCopyRatiosNormal/delta_MAD_value
-#   run: tools/UnScatterFloat.cwl
-#   out:
-#   - id: float_
+- id: UnScatterdelta_MAD_value
+  in:
+  - id: input_array
+    source: PlotDenoisedCopyRatiosNormal/delta_MAD_value
+  run: tools/UnScatterFloat.cwl
+  out:
+  - id: float_
 - id: UnScatterscaled_delta_MAD
   in:
   - id: input_array
@@ -1363,26 +1317,17 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-# - id: UnScatterscaled_delta_MAD_value
-#   in:
-#   - id: input_array
-#     source: PlotDenoisedCopyRatiosNormal/scaled_delta_MAD_value
-#   run: tools/UnScatterFloat.cwl
-#   out:
-#   - id: float_
-- id: PlotModeledSegmentsNormal
-  scatter: bam
+- id: UnScatterscaled_delta_MAD_value
   in:
-  #- id: run_normal
-  #  valueFrom:
-  #    ${
-  #      if(inputs.normal_bam){
-  #        return[1]
-  #      }else{
-  #        []
-  #      }
-  #    }
-  - id: bam
+  - id: input_array
+    source: PlotDenoisedCopyRatiosNormal/scaled_delta_MAD_value
+  run: tools/UnScatterFloat.cwl
+  out:
+  - id: float_
+- id: PlotModeledSegmentsNormal
+  scatter: normal_bam
+  in:
+  - id: normal_bam
     source: normal_bam
   - id: entity_id
     source: UnScatter_read_counts_entity_id_normal/string_
@@ -1438,34 +1383,34 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-- id: CNVOncotatorWorkflow
-  #scatter: run_onco
-  in:
-  # - id: run_onco
-  #   valueFrom:
-  #     ${
-  #       if(inputs.is_run_oncotator){
-  #         return[1]
-  #       }else{
-  #         []
-  #       }
-  #     }
-  - id: called_file
-    source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
-  - id: additional_args
-    source: additional_args_for_oncotator
-  - id: oncotator_docker
-    source: oncotator_docker
-  - id: mem_gb_for_oncotator
-    source: mem_gb_for_oncotator
-  - id: boot_disk_space_gb_for_oncotator
-    source: boot_disk_space_gb_for_oncotator
-  - id: preemptible_attempts
-    source: preemptible_attempts
-  run: cnv_somatic_oncotator_workflow.cwl
-  out:
-  - id: oncotated_called_file
-  - id: oncotated_called_gene_list_file
+# - id: CNVOncotatorWorkflow
+#   #scatter: run_onco
+#   in:
+#   # - id: run_onco
+#   #   valueFrom:
+#   #     ${
+#   #       if(inputs.is_run_oncotator){
+#   #         return[1]
+#   #       }else{
+#   #         []
+#   #       }
+#   #     }
+#   - id: called_file
+#     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
+#   - id: additional_args
+#     source: additional_args_for_oncotator
+#   - id: oncotator_docker
+#     source: oncotator_docker
+#   - id: mem_gb_for_oncotator
+#     source: mem_gb_for_oncotator
+#   - id: boot_disk_space_gb_for_oncotator
+#     source: boot_disk_space_gb_for_oncotator
+#   - id: preemptible_attempts
+#     source: preemptible_attempts
+#   run: cnv_somatic_oncotator_workflow.cwl
+#   out:
+#   - id: oncotated_called_file
+#   - id: oncotated_called_gene_list_file
 # - id: UnScatterOncotate_genelist
 #   in:
 #   - id: input_array
@@ -1480,56 +1425,56 @@ steps:
 #   run: tools/UnScatterFile.cwl
 #   out:
 #   - id: File_
-- id: CNVFuncotateSegmentsWorkflow
-#  scatter: run_funco
-  in:
-  # - id: run_funco
-  #   valueFrom:
-  #     ${
-  #       if(inputs.is_run_funcotator){
-  #         return[1]
-  #       }else{
-  #         []
-  #       }
-  #     }
-  - id: input_seg_file
-    source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
-  - id: ref_fasta
-    source: ref_fasta
-  - id: funcotator_ref_version
-    source: funcotator_ref_version
-  - id: gatk4_jar_override
-    source: gatk4_jar_override
-  - id: funcotator_data_sources_tar_gz
-    source: funcotator_data_sources_tar_gz
-  - id: transcript_selection_mode
-    source: funcotator_transcript_selection_mode
-  - id: transcript_selection_list
-    source: funcotator_transcript_selection_list
-  - id: annotation_defaults
-    source: funcotator_annotation_defaults
-  - id: annotation_overrides
-    source: funcotator_annotation_overrides
-  - id: funcotator_excluded_fields
-    source: funcotator_excluded_fields
-  - id: extra_args
-    source: additional_args_for_funcotator
-  - id: is_removing_untared_datasources
-    source: funcotator_is_removing_untared_datasources
-  - id: gatk_docker
-    source: gatk_docker
-  - id: mem_gb
-    source: mem_gb_for_funcotator
-  - id: use_ssd
-    source: funcotator_use_ssd
-  - id: cpu
-    source: funcotator_cpu
-  - id: preemptible_attempts
-    source: preemptible_attempts
-  run: cnv_somatic_funcotate_seg_workflow.cwl
-  out:
-  - id: funcotated_seg_simple_tsv
-  - id: funcotated_gene_list_tsv
+# - id: CNVFuncotateSegmentsWorkflow
+# #  scatter: run_funco
+#   in:
+#   # - id: run_funco
+#   #   valueFrom:
+#   #     ${
+#   #       if(inputs.is_run_funcotator){
+#   #         return[1]
+#   #       }else{
+#   #         []
+#   #       }
+#   #     }
+#   - id: input_seg_file
+#     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
+#   - id: ref_fasta
+#     source: ref_fasta
+#   - id: funcotator_ref_version
+#     source: funcotator_ref_version
+#   - id: gatk4_jar_override
+#     source: gatk4_jar_override
+#   - id: funcotator_data_sources_tar_gz
+#     source: funcotator_data_sources_tar_gz
+#   - id: transcript_selection_mode
+#     source: funcotator_transcript_selection_mode
+#   - id: transcript_selection_list
+#     source: funcotator_transcript_selection_list
+#   - id: annotation_defaults
+#     source: funcotator_annotation_defaults
+#   - id: annotation_overrides
+#     source: funcotator_annotation_overrides
+#   - id: funcotator_excluded_fields
+#     source: funcotator_excluded_fields
+#   - id: extra_args
+#     source: additional_args_for_funcotator
+#   - id: is_removing_untared_datasources
+#     source: funcotator_is_removing_untared_datasources
+#   - id: gatk_docker
+#     source: gatk_docker
+#   - id: mem_gb
+#     source: mem_gb_for_funcotator
+#   - id: use_ssd
+#     source: funcotator_use_ssd
+#   - id: cpu
+#     source: funcotator_cpu
+#   - id: preemptible_attempts
+#     source: preemptible_attempts
+#   run: cnv_somatic_funcotate_seg_workflow.cwl
+#   out:
+#   - id: funcotated_seg_simple_tsv
+#   - id: funcotated_gene_list_tsv
 # - id: UnScatterFuncotate_genelist
 #   in:
 #   - id: input_array
