@@ -222,9 +222,6 @@ outputs:
 - id: denoised_copy_ratios_plot_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/denoised_copy_ratios_plot
-# - id: denoised_copy_ratios_lim_4_plot_tumor
-#   type: File
-#   outputSource: PlotDenoisedCopyRatiosTumor/denoised_copy_ratios_lim_4_plot
 - id: standardized_MAD_tumor
   type: File
   outputSource: PlotDenoisedCopyRatiosTumor/standardized_MAD
@@ -312,9 +309,6 @@ outputs:
 - id: denoised_copy_ratios_plot_normal
   type: File?
   outputSource: UnScatterdenoised_copy_ratios_plot/File_
-# - id: denoised_copy_ratios_lim_4_plot_normal
-#   type: File?
-#   outputSource: UnScatterdenoised_copy_ratios_lim_4_plot/File_
 - id: standardized_MAD_normal
   type: File?
   outputSource: UnScatterstandardized_MAD/File_
@@ -342,18 +336,6 @@ outputs:
 - id: modeled_segments_plot_normal
   type: File?
   outputSource: UnScattermodeled_segments_plot/File_
-# - id: oncotated_called_file_tumor
-#   type: File?
-#   outputSource: CNVOncotatorWorkflow/oncotated_called_file
-# - id: oncotated_called_gene_list_file_tumor
-#   type: File?
-#   outputSource: CNVOncotatorWorkflow/oncotated_called_gene_list_file
-# - id: funcotated_called_file_tumor
-#   type: File?
-#   outputSource: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
-# - id: funcotated_called_gene_list_file_tumor
-#   type: File?
-#   outputSource: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
 
 steps:
 - id: PreprocessIntervals
@@ -793,7 +775,6 @@ steps:
   run: tools/PlotDenoisedCopyRatios.cwl
   out:
   - id: denoised_copy_ratios_plot
-  #- id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
   - id: standardized_MAD_value
   - id: denoised_MAD
@@ -883,13 +864,6 @@ steps:
   run: tools/UnScatterString.cwl
   out:
   - id: string_
-# - id: UnScatter_read_counts_entity_id_normal_file
-#   in:
-#   - id: input_array
-#     source: CollectCountsNormal/entity_id
-#   run: tools/UnScatterString_File.cwl
-#   out:
-#   - id: file_
 - id: UnScatter_read_counts_normal
   in:
   - id: input_array
@@ -1244,7 +1218,6 @@ steps:
   run: tools/PlotDenoisedCopyRatios.cwl
   out:
   - id: denoised_copy_ratios_plot
-  #- id: denoised_copy_ratios_lim_4_plot
   - id: standardized_MAD
   - id: standardized_MAD_value
   - id: denoised_MAD
@@ -1260,13 +1233,6 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-# - id: UnScatterdenoised_copy_ratios_lim_4_plot
-#   in:
-#   - id: input_array
-#     source: PlotDenoisedCopyRatiosNormal/denoised_copy_ratios_lim_4_plot
-#   run: tools/UnScatterFile.cwl
-#   out:
-#   - id: File_
 - id: UnScatterstandardized_MAD
   in:
   - id: input_array
@@ -1382,109 +1348,3 @@ steps:
   run: tools/UnScatterFile.cwl
   out:
   - id: File_
-# - id: CNVOncotatorWorkflow
-#   #scatter: run_onco
-#   in:
-#   # - id: run_onco
-#   #   valueFrom:
-#   #      ${
-#   #        if(inputs.is_run_oncotator){
-#   #          return[1];
-#   #        }else{
-#   #          return[];
-#   #        }
-#   #      }
-#   - id: called_file
-#     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
-#   - id: additional_args
-#     source: additional_args_for_oncotator
-#   - id: oncotator_docker
-#     source: oncotator_docker
-#   - id: mem_gb_for_oncotator
-#     source: mem_gb_for_oncotator
-#   - id: boot_disk_space_gb_for_oncotator
-#     source: boot_disk_space_gb_for_oncotator
-#   - id: preemptible_attempts
-#     source: preemptible_attempts
-#   run: cnv_somatic_oncotator_workflow.cwl
-#   out:
-#   - id: oncotated_called_file
-#   - id: oncotated_called_gene_list_file
-# - id: UnScatterOncotate_genelist
-#   in:
-#   - id: input_array
-#     source: CNVOncotatorWorkflow/oncotated_called_gene_list_file
-#   run: tools/UnScatterFile.cwl
-#   out:
-#   - id: File_
-# - id: UnScatterOncotate_called
-#   in:
-#   - id: input_array
-#     source: CNVOncotatorWorkflow/oncotated_called_file
-#   run: tools/UnScatterFile.cwl
-#   out:
-#   - id: File_
-# - id: CNVFuncotateSegmentsWorkflow
-# #  scatter: run_funco
-#   in:
-#   # - id: run_funco
-#   #   valueFrom:
-#   #     ${
-#   #       if(inputs.is_run_funcotator){
-#   #         return[1]
-#   #       }else{
-#   #         []
-#   #       }
-#   #     }
-#   - id: input_seg_file
-#     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
-#   - id: ref_fasta
-#     source: ref_fasta
-#   - id: funcotator_ref_version
-#     source: funcotator_ref_version
-#   - id: gatk4_jar_override
-#     source: gatk4_jar_override
-#   - id: funcotator_data_sources_tar_gz
-#     source: funcotator_data_sources_tar_gz
-#   - id: transcript_selection_mode
-#     source: funcotator_transcript_selection_mode
-#   - id: transcript_selection_list
-#     source: funcotator_transcript_selection_list
-#   - id: annotation_defaults
-#     source: funcotator_annotation_defaults
-#   - id: annotation_overrides
-#     source: funcotator_annotation_overrides
-#   - id: funcotator_excluded_fields
-#     source: funcotator_excluded_fields
-#   - id: extra_args
-#     source: additional_args_for_funcotator
-#   - id: is_removing_untared_datasources
-#     source: funcotator_is_removing_untared_datasources
-#   - id: gatk_docker
-#     source: gatk_docker
-#   - id: mem_gb
-#     source: mem_gb_for_funcotator
-#   - id: use_ssd
-#     source: funcotator_use_ssd
-#   - id: cpu
-#     source: funcotator_cpu
-#   - id: preemptible_attempts
-#     source: preemptible_attempts
-#   run: cnv_somatic_funcotate_seg_workflow.cwl
-#   out:
-#   - id: funcotated_seg_simple_tsv
-#   - id: funcotated_gene_list_tsv
-# - id: UnScatterFuncotate_genelist
-#   in:
-#   - id: input_array
-#     source: CNVFuncotateSegmentsWorkflow/funcotated_gene_list_tsv
-#   run: tools/UnScatterFile.cwl
-#   out:
-#   - id: File_
-# - id: UnScatterFuncotate_seg
-#   in:
-#   - id: input_array
-#     source: CNVFuncotateSegmentsWorkflow/funcotated_seg_simple_tsv
-#   run: tools/UnScatterFile.cwl
-#   out:
-#   - id: File_
