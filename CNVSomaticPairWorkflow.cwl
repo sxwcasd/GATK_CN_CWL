@@ -35,10 +35,6 @@ inputs:
   - ^.dict
 - id: gatk_docker
   type: string
-- id: is_run_oncotator
-  type: boolean?
-- id: is_run_funcotator
-  type: boolean?
 - id: gatk4_jar_override
   type:
   - File
@@ -121,41 +117,6 @@ inputs:
 - id: minimum_contig_length
   type: int?
 - id: mem_gb_for_plotting
-  type: int?
-- id: additional_args_for_oncotator
-  type: string?
-- id: oncotator_docker
-  type: string?
-- id: mem_gb_for_oncotator
-  type: int?
-- id: boot_disk_space_gb_for_oncotator
-  type: int?
-- id: additional_args_for_funcotator
-  type: string?
-- id: funcotator_ref_version
-  type: string?
-  default: hg19
-- id: mem_gb_for_funcotator
-  type: int?
-- id: funcotator_transcript_selection_list
-  type: File?
-- id: funcotator_data_sources_tar_gz
-  type: File?
-- id: funcotator_transcript_selection_mode
-  type: string?
-- id: funcotator_annotation_defaults
-  type: string[]?
-- id: funcotator_annotation_overrides
-  type: string[]?
-- id: funcotator_excluded_fields
-  type: string[]?
-- id: funcotator_is_removing_untared_datasources
-  type: boolean?
-- id: funcotator_disk_space_gb
-  type: int?
-- id: funcotator_use_ssd
-  type: boolean?
-- id: funcotator_cpu
   type: int?
 
 outputs:
