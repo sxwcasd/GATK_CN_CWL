@@ -22,9 +22,8 @@ inputs:
   secondaryFiles:
   - ^.bai
 - id: normal_bam
-  type:
-    type: array
-    items: File
+  type: File[]?
+  default: []
   secondaryFiles:
   - ^.bai
 - id: read_count_pon
@@ -676,7 +675,7 @@ steps:
         var disk_pad = 20 + Math.ceil(inputs.intervals.size) + Math.ceil(inputs.common_sites.size) + gatk4_override_size + emergency_extra_disk_size;
 
         var model_segments_normal_portion = 0;
-        if (inputs.normal_bam){
+        if (inputs.normal_bam.length > 0){
           model_segments_normal_portion = Math.ceil(self[0].size);
         }
 
@@ -1388,13 +1387,13 @@ steps:
 #   in:
 #   # - id: run_onco
 #   #   valueFrom:
-#   #     ${
-#   #       if(inputs.is_run_oncotator){
-#   #         return[1]
-#   #       }else{
-#   #         []
-#   #       }
-#   #     }
+#   #      ${
+#   #        if(inputs.is_run_oncotator){
+#   #          return[1];
+#   #        }else{
+#   #          return[];
+#   #        }
+#   #      }
 #   - id: called_file
 #     source: CallCopyRatioSegmentsTumor/called_copy_ratio_segments
 #   - id: additional_args

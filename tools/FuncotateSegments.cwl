@@ -33,10 +33,8 @@ inputs:
 - id: funcotator_data_sources_tar_gz
   type:
   - File?
-  - string?
-  default:
+  #default:
     #gs://broad-public-datasets/funcotator/funcotator_dataSources.v1.6.20190124s.tar.gz
-    "https://storage.googleapis.com/broad-public-datasets/funcotator/funcotator_dataSources.v1.6.20190124s.tar.gz"
 - id: transcript_selection_mode
   type: string?
   default: CANONICAL
@@ -115,7 +113,7 @@ arguments:
      # Extract our data sources:
      echo "Extracting data sources zip file..."
      mkdir datasources_dir
-     curl $(inputs.funcotator_data_sources_tar_gz) | tar zxvf - -C datasources_dir --strip-components 1
+     tar zxvf $(inputs.funcotator_data_sources_tar_gz) -C datasources_dir --strip-components 1
      DATA_SOURCES_FOLDER="$PWD/datasources_dir"
 
      # Run FuncotateSegments:
