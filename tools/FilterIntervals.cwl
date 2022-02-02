@@ -7,7 +7,7 @@ requirements:
 - class: ShellCommandRequirement
 - class: InlineJavascriptRequirement
 - class: DockerRequirement
-  dockerPull: us.gcr.io/broad-gatk/gatk:4.1.9.0
+  dockerPull: broadinstitute/gatk:latest
 - class: ResourceRequirement
   ramMax: $(inputs.mem_gb*1000)
   coresMax: $(inputs.cpu)
